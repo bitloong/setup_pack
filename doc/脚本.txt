@@ -1,0 +1,21 @@
+﻿
+----------------------------------------------------------------
+-- 运行文件
+----------------------------------------------------------------
+result = Shell.Execute(SessionVar.Expand("%AppFolder%\\启动押钞服务_带日志.exe"), "open", "", "", SW_SHOWNORMAL, false);
+
+----------------------------------------------------------------
+-- 添加环境变量
+----------------------------------------------------------------
+strPath = Registry.GetValue(HKEY_LOCAL_MACHINE, "SYSTEM\\ControlSet001\\Control\\Session Manager\\Environment", "Path", true);
+if strPath ~= "" then
+	strPath = String.Concat(strPath, ";");
+end
+
+strPathToAdd = SessionVar.Expand("%AppFolder%");
+strPathToAdd = String.Concat(strPathToAdd,"\\mysql-5.5.40-winx64\\bin\\;");
+-- 如果路径中无该位置,则加入
+if String.Find(strPath,strPathToAdd) == -1 then
+	strPath = String.Concat(strPath, strPathToAdd);
+	Registry.SetValue(HKEY_LOCAL_MACHINE, "SYSTEM\\ControlSet001\\Control\\Session Manager\\Environment", "Path", strPath, REG_SZ);
+end
